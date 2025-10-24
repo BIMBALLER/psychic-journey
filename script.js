@@ -1,4 +1,4 @@
-// Expanded fallback quotes from various scholars (for API failures)
+// Keep all fallback quotes (original preserved)
 const fallbackQuotes = [
   { quote: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Confucius" },
@@ -10,52 +10,32 @@ const fallbackQuotes = [
   { quote: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" },
 ];
 
-// Expanded fallback scriptures for light mode (Bible, Quran, Bhagavad Gita) - tag-free
+// Fallback scriptures (Bible, Quran in English, Gita)
 const fallbackScriptures = [
   // Bible
-  { quote: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", author: "Bible - John 3:16" },
-  { quote: "For I know the plans I have for you,” declares the Lord, “plans to prosper you and not to harm you, plans to give you hope and a future.", author: "Bible - Jeremiah 29:11" },
-  { quote: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", author: "Bible - Romans 8:28" },
+  { quote: "For God so loved the world that he gave his one and only Son...", author: "Bible - John 3:16" },
+  { quote: "For I know the plans I have for you, declares the Lord...", author: "Bible - Jeremiah 29:11" },
+  { quote: "And we know that in all things God works for the good...", author: "Bible - Romans 8:28" },
   { quote: "I can do all this through him who gives me strength.", author: "Bible - Philippians 4:13" },
-  // Quran
-  { quote: "In the name of Allah, the Entirely Merciful, the Especially Merciful.", author: "Quran - Al-Fatiha 1" },
-  { quote: "Indeed, with hardship [will be] ease. Indeed, with hardship [will be] ease.", author: "Quran - Ash-Sharh 6" },
-  { quote: "And whoever relies upon Allah - then He is sufficient for him. Indeed, Allah will accomplish His purpose.", author: "Quran - At-Talaq 3" },
+  // Quran (English)
+  { quote: "Indeed, with hardship comes ease.", author: "Quran - Ash-Sharh 94:6" },
+  { quote: "And whoever relies upon Allah - then He is sufficient for him.", author: "Quran - At-Talaq 65:3" },
+  { quote: "Allah does not burden a soul beyond that it can bear.", author: "Quran - Al-Baqarah 2:286" },
   // Bhagavad Gita
-  { quote: "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself the cause of the results...", author: "Bhagavad Gita - 2:47" },
-  { quote: "Whenever and wherever there is a decline in religious practice... and a predominant rise of irreligion—at that time I descend Myself.", author: "Bhagavad Gita - 4:7" },
-  { quote: "The soul is neither born, and nor does it die.", author: "Bhagavad Gita - 2:20" },
-];
-
-// Bible book names in order (1-based index for API mapping)
-const bookNames = [
-  "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
-  "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah",
-  "Esther", "Job", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah",
-  "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah", "Jonah",
-  "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi",
-  "Matthew", "Mark", "Luke", "John", "Acts", "Romans", "1 Corinthians", "2 Corinthians",
-  "Galatians", "Ephesians", "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians",
-  "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter",
-  "1 John", "2 John", "3 John", "Jude", "Revelation"
+  { quote: "You have a right to perform your duty, but not to the fruits of action.", author: "Bhagavad Gita - 2:47" },
+  { quote: "The soul is neither born, nor does it ever die.", author: "Bhagavad Gita - 2:20" },
+  { quote: "Whenever there is a decline in righteousness... I manifest Myself.", author: "Bhagavad Gita - 4:7" },
 ];
 
 let savedQuotes = JSON.parse(localStorage.getItem('savedQuotes')) || [];
 
-// Helper to strip Strong's tags from Bible text
 function stripStrongTags(text) {
   return text.replace(/<S>\d+<\/S>/g, '');
 }
 
 function generateRandomQuote() {
-  console.log('Generating quote based on current theme...');
   const quoteElement = document.getElementById('quote');
   const authorElement = document.getElementById('author');
-  if (!quoteElement || !authorElement) {
-    console.error('DOM elements #quote or #author not found');
-    return;
-  }
-
   quoteElement.classList.remove('show');
 
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
@@ -65,7 +45,6 @@ function generateRandomQuote() {
     url = 'https://dummyjson.com/quotes/random';
     fallbackArray = fallbackQuotes;
   } else {
-    // Light mode: Randomly select holy book
     const holyBooks = ['bible', 'quran', 'gita'];
     selectedBook = holyBooks[Math.floor(Math.random() * holyBooks.length)];
     fallbackArray = fallbackScriptures;
@@ -74,7 +53,7 @@ function generateRandomQuote() {
       url = 'https://bolls.life/get-random-verse/KJV/';
     } else if (selectedBook === 'quran') {
       const randomAyah = Math.floor(Math.random() * 6236) + 1;
-      url = `http://api.alquran.cloud/v1/ayah/${randomAyah}/en.sahihinternational`;
+      url = `https://api.alquran.cloud/v1/ayah/${randomAyah}/en.sahih`;
     } else if (selectedBook === 'gita') {
       const randomCh = Math.floor(Math.random() * 18) + 1;
       const randomVerse = Math.floor(Math.random() * 47) + 1;
@@ -83,167 +62,94 @@ function generateRandomQuote() {
   }
 
   fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-      }
-      return response.json();
-    })
+    .then(res => res.json())
     .then(data => {
       let quoteText, authorText;
       if (currentTheme === 'dark') {
-        if (!data.quote || !data.author) {
-          throw new Error('Invalid API response');
-        }
         quoteText = data.quote;
         authorText = data.author;
       } else if (selectedBook === 'bible') {
-        if (!data.text) {
-          throw new Error('Invalid API response');
-        }
-        quoteText = stripStrongTags(data.text); // Zap those Strong's tags!
-        const bookName = bookNames[data.book - 1];
-        authorText = `Bible - ${bookName} ${data.chapter}:${data.verse}`;
+        quoteText = stripStrongTags(data.text);
+        authorText = `Bible - ${data.bookname} ${data.chapter}:${data.verse}`;
       } else if (selectedBook === 'quran') {
-        if (!data.data || !data.data.ayah || !data.data.surah) {
-          throw new Error('Invalid API response');
-        }
-        quoteText = data.data.ayah.text;
-        authorText = `Quran - ${data.data.surah.englishName} ${data.data.ayah.numberInSurah}`;
+        quoteText = data.data.text;
+        authorText = `Quran - ${data.data.surah.englishName} ${data.data.numberInSurah}`;
       } else if (selectedBook === 'gita') {
-        if (!data.data || data.data.length === 0) {
-          throw new Error('Invalid API response');
-        }
-        // Pick first English translation
-        const enTranslation = data.data.find(t => t.lang === 'en');
-        if (!enTranslation) {
-          throw new Error('No English translation found');
-        }
-        quoteText = enTranslation.translation;
-        authorText = `Bhagavad Gita - Chapter ${data.data[0].chapter}:${data.data[0].verse}`;
+        const en = data.data.find(t => t.lang === 'en');
+        quoteText = en.translation;
+        authorText = `Bhagavad Gita - ${data.data[0].chapter}:${data.data[0].verse}`;
       }
-      console.log(`Quote fetched from ${selectedBook || 'scholars'}:`, { quote: quoteText, author: authorText });
       quoteElement.textContent = `"${quoteText}"`;
       authorElement.textContent = `- ${authorText}`;
-      setTimeout(() => {
-        quoteElement.classList.add('show');
-      }, 10);
+      setTimeout(() => quoteElement.classList.add('show'), 10);
       window.currentQuote = { text: quoteText, author: authorText };
     })
-    .catch(error => {
-      console.error('Error fetching quote:', error.message);
-      const randomIndex = Math.floor(Math.random() * fallbackArray.length);
-      const quoteObj = fallbackArray[randomIndex];
-      console.log('Using fallback quote:', quoteObj);
-      quoteElement.textContent = `"${quoteObj.quote}"`;
-      authorElement.textContent = `- ${quoteObj.author}`;
-      setTimeout(() => {
-        quoteElement.classList.add('show');
-      }, 10);
-      window.currentQuote = { text: quoteObj.quote, author: quoteObj.author };
+    .catch(() => {
+      const random = fallbackArray[Math.floor(Math.random() * fallbackArray.length)];
+      quoteElement.textContent = `"${random.quote}"`;
+      authorElement.textContent = `- ${random.author}`;
+      setTimeout(() => quoteElement.classList.add('show'), 10);
+      window.currentQuote = { text: random.quote, author: random.author };
     });
 }
 
-// Theme toggle function
 function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', currentTheme);
-  document.getElementById('themeToggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-  localStorage.setItem('theme', currentTheme);
-  console.log('Theme toggled to:', currentTheme);
-  // Auto-refresh quote to match new theme
+  const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', newTheme);
   generateRandomQuote();
 }
 
 function saveQuote() {
-  if (window.currentQuote) {
-    savedQuotes.push(window.currentQuote);
-    localStorage.setItem('savedQuotes', JSON.stringify(savedQuotes));
-    alert('Quote saved!');
-    console.log('Saved quote:', window.currentQuote);
-  } else {
-    alert('No quote to save!');
-    console.error('No current quote to save');
-  }
+  if (!window.currentQuote) return alert('No quote to save!');
+  savedQuotes.push(window.currentQuote);
+  localStorage.setItem('savedQuotes', JSON.stringify(savedQuotes));
+  alert('Quote saved!');
 }
 
-// Show saved quotes
 function showSavedQuotes() {
-  const savedQuotesDiv = document.getElementById('saved-quotes');
-  savedQuotesDiv.innerHTML = '<h3>Saved Quotes</h3>';
-  if (savedQuotes.length === 0) {
-    savedQuotesDiv.innerHTML += '<p>No saved quotes yet.</p>';
-    console.log('No saved quotes to display');
-    return;
-  }
-  savedQuotes.forEach((quote, index) => {
-    const quoteElement = document.createElement('p');
-    quoteElement.textContent = `"${quote.text}" - ${quote.author}`;
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.onclick = () => deleteQuote(index);
-    quoteElement.appendChild(deleteButton);
-    savedQuotesDiv.appendChild(quoteElement);
+  const div = document.getElementById('saved-quotes');
+  div.innerHTML = '<h3>Saved Quotes</h3>';
+  if (!savedQuotes.length) return (div.innerHTML += '<p>No saved quotes yet.</p>');
+  savedQuotes.forEach((q, i) => {
+    const p = document.createElement('p');
+    p.textContent = `"${q.text}" - ${q.author}`;
+    const btn = document.createElement('button');
+    btn.textContent = 'Delete';
+    btn.onclick = () => deleteQuote(i);
+    p.appendChild(btn);
+    div.appendChild(p);
   });
-  console.log('Displayed saved quotes:', savedQuotes);
 }
 
-function deleteQuote(index) {
-  savedQuotes.splice(index, 1);
+function deleteQuote(i) {
+  savedQuotes.splice(i, 1);
   localStorage.setItem('savedQuotes', JSON.stringify(savedQuotes));
   showSavedQuotes();
-  console.log('Deleted quote at index:', index);
 }
 
 function shareQuote(platform) {
-  if (!window.currentQuote) {
-    alert('No quote to share!');
-    console.error('No current quote to share');
-    return;
-  }
+  if (!window.currentQuote) return alert('No quote to share!');
   const { text, author } = window.currentQuote;
   const shareText = `${text} - ${author}`;
-  let shareUrl;
-
-  switch (platform) {
-    case 'twitter':
-      shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-      break;
-    case 'facebook':
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(shareText)}`;
-      break;
-    case 'whatsapp':
-      shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-      break;
-    default:
-      console.error('Unknown share platform:', platform);
-      return;
-  }
-  console.log(`Sharing on ${platform}:`, shareText);
-  window.open(shareUrl, '_blank');
+  let url;
+  if (platform === 'twitter') url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+  if (platform === 'facebook') url = `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(shareText)}`;
+  if (platform === 'whatsapp') url = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+  window.open(url, '_blank');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Load persisted theme
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-  document.getElementById('quote-button').addEventListener('click', () => {
-    console.log('Get New Quote button clicked');
-    generateRandomQuote();
-  });
+  document.getElementById('quote-button').addEventListener('click', generateRandomQuote);
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
   document.getElementById('save-button').addEventListener('click', saveQuote);
   document.getElementById('show-saved-button').addEventListener('click', showSavedQuotes);
   document.getElementById('share-twitter').addEventListener('click', () => shareQuote('twitter'));
   document.getElementById('share-facebook').addEventListener('click', () => shareQuote('facebook'));
   document.getElementById('share-whatsapp').addEventListener('click', () => shareQuote('whatsapp'));
-
   generateRandomQuote();
 });
-
-const change=document.getElementById("quote-button");
-change.onclick=function(){
-    document.body.style.backgroundColor=`#${Math.floor(Math.random()*16777215).toString(16)}`
-};

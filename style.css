@@ -1,128 +1,224 @@
 :root {
-    --bg-color: #f0f4f8;
-    --card-bg: #ffffff;
-    --text-color: #333333;
-    --accent-color: #4a90e2;
-    --border-color: #e0e0e0;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --bg-color: #f0f4f8;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --accent-color: #4a90e2;
+  --border-color: #e0e0e0;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 [data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --card-bg: #2d2d2d;
-    --text-color: #f0f4f8;
-    --accent-color: #7ed321;
-    --border-color: #404040;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --bg-color: #1a1a1a;
+  --card-bg: #2d2d2d;
+  --text-color: #f0f4f8;
+  --accent-color: #7ed321;
+  --border-color: #404040;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    transition: background-color 0.3s ease;
+  font-family: 'Arial', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  transition: background-color 0.3s ease;
 }
-.container {
-    text-align: center;
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    max-width: 500px;
-    width: 90%;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
 }
-.quote-box {
-    margin-bottom: 1rem;
+
+.navbar .logo {
+  font-weight: bold;
+  color: var(--accent-color);
+  font-size: 1.3rem;
+  margin-right: 38rem; /* increased space between logo and nav links */
 }
-#quote {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 1rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s ease;
+.logo img {
+  width: 60px;     /* adjust size as needed */
+  height: auto;    /* keeps the aspect ratio */
+  margin-left: 10px; /* optional: adds some space from the edge */
 }
-#quote.show {
-    opacity: 1;
-    transform: translateY(0);
+
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem; /* added more spacing between li items */
+  margin: 0;
+  padding: 0;
 }
-#author {
-    font-weight: bold;
-    color: var(--accent-color);
-    margin-bottom: 2rem;
+
+.navbar a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: bold;
+  transition: color 0.3s;
 }
-button {
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin: 0.25rem;
-    transition: background 0.3s ease;
+
+.navbar a:hover {
+  color: var(--accent-color);
 }
-button:hover {
-    opacity: 0.9;
-}
+
+/* Theme toggle button */
 #themeToggle {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
+  position: fixed;
+  top: 100px; /* about 40px below navbar */
+  right: 1.5rem;
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  z-index: 5;
 }
+
+/* Container */
+.container {
+  margin-top: 180px;
+  text-align: center;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  width: 90%;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.quote-box {
+  margin-bottom: 1rem;
+}
+
+#quote {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+#quote.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#author {
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-bottom: 2rem;
+}
+
+button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0.25rem;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Share buttons */
 #share-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
+
 #share-twitter {
-    background: #1da1f2; 
+  background: #1da1f2;
 }
 #share-facebook {
-    background: #3b5998; 
+  background: #3b5998;
 }
 #share-whatsapp {
-    background: #25d366;
+  background: #25d366;
 }
+
+/* Saved quotes section */
 #saved-quotes {
-    background: var(--card-bg);
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow);
-    max-width: 500px;
-    width: 90%;
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  width: 90%;
 }
 #saved-quotes h3 {
-    color: var(--accent-color);
-    font-size: 1.2rem;
-    margin: 0 0 1rem;
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
 }
 #saved-quotes p {
-    font-size: 1rem;
-    margin: 0.5rem 0;
-    padding: 0.5rem;
-    border-left: 3px solid var(--accent-color);
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-left: 3px solid var(--accent-color);
 }
 #saved-quotes button {
-    background: #dc3545; 
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+  background: #dc3545;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+
+  .navbar ul {
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 480px) {
-    .container, #saved-quotes {
-        padding: 1.5rem;
-    }
-    #quote {
-        font-size: 1rem;
-    }
+  .navbar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar .logo {
+    margin-bottom: 0.5rem;
+  }
+
+  .navbar ul {
+    gap: 0.8rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  #quote {
+    font-size: 1rem;
+  }
 }
