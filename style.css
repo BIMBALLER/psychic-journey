@@ -17,7 +17,7 @@
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   display: flex;
@@ -38,31 +38,24 @@ body {
   background: var(--card-bg);
   box-shadow: var(--shadow);
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
   border-bottom: 1px solid var(--border-color);
   z-index: 10;
 }
 
-.navbar .logo {
-  font-weight: bold;
-  color: var(--accent-color);
-  font-size: 1.3rem;
-  margin-right: 38rem; /* increased space between logo and nav links */
-}
 .logo img {
-  width: 60px;     /* adjust size as needed */
-  height: auto;    /* keeps the aspect ratio */
-  margin-left: 10px; /* optional: adds some space from the edge */
+  width: 60px;
+  height: auto;
+  margin-left: 10px;
 }
 
-
-.navbar ul {
+/* Nav Links */
+.nav-links {
   list-style: none;
   display: flex;
-  gap: 2rem; /* added more spacing between li items */
-  margin: 0;
+  gap: 1rem;
+  margin-right: 100px;
   padding: 0;
 }
 
@@ -77,10 +70,43 @@ body {
   color: var(--accent-color);
 }
 
-/* Theme toggle button */
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 20;
+}
+
+.bar {
+  height: 3px;
+  width: 100%;
+  background-color: var(--text-color);
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Animate into X */
+.hamburger.active .bar:nth-child(1) {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* Theme toggle */
 #themeToggle {
   position: fixed;
-  top: 100px; /* about 40px below navbar */
+  top: 100px;
   right: 1.5rem;
   background: transparent;
   color: var(--text-color);
@@ -163,7 +189,7 @@ button:hover {
   background: #25d366;
 }
 
-/* Saved quotes section */
+/* Saved quotes */
 #saved-quotes {
   background: var(--card-bg);
   padding: 1rem;
@@ -190,28 +216,43 @@ button:hover {
   font-size: 0.9rem;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 1rem;
+  .hamburger {
+    display: flex;
   }
 
-  .navbar ul {
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .navbar {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .navbar .logo {
-    margin-bottom: 0.5rem;
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background: var(--card-bg);
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 100%;
+    box-shadow: var(--shadow);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
   }
 
-  .navbar ul {
-    gap: 0.8rem;
+  .nav-links.show {
+    display: flex;
+    animation: slideDown 0.3s ease;
+  }
+
+  .nav-links li {
+    padding: 1rem 0;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .container {

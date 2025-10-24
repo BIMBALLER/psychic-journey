@@ -1,4 +1,4 @@
-// Keep all fallback quotes (original preserved)
+// Keep all fallback quotes
 const fallbackQuotes = [
   { quote: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Confucius" },
@@ -10,21 +10,11 @@ const fallbackQuotes = [
   { quote: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" },
 ];
 
-// Fallback scriptures (Bible, Quran in English, Gita)
 const fallbackScriptures = [
-  // Bible
   { quote: "For God so loved the world that he gave his one and only Son...", author: "Bible - John 3:16" },
   { quote: "For I know the plans I have for you, declares the Lord...", author: "Bible - Jeremiah 29:11" },
-  { quote: "And we know that in all things God works for the good...", author: "Bible - Romans 8:28" },
-  { quote: "I can do all this through him who gives me strength.", author: "Bible - Philippians 4:13" },
-  // Quran (English)
   { quote: "Indeed, with hardship comes ease.", author: "Quran - Ash-Sharh 94:6" },
-  { quote: "And whoever relies upon Allah - then He is sufficient for him.", author: "Quran - At-Talaq 65:3" },
-  { quote: "Allah does not burden a soul beyond that it can bear.", author: "Quran - Al-Baqarah 2:286" },
-  // Bhagavad Gita
   { quote: "You have a right to perform your duty, but not to the fruits of action.", author: "Bhagavad Gita - 2:47" },
-  { quote: "The soul is neither born, nor does it ever die.", author: "Bhagavad Gita - 2:20" },
-  { quote: "Whenever there is a decline in righteousness... I manifest Myself.", author: "Bhagavad Gita - 4:7" },
 ];
 
 let savedQuotes = JSON.parse(localStorage.getItem('savedQuotes')) || [];
@@ -151,5 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('share-twitter').addEventListener('click', () => shareQuote('twitter'));
   document.getElementById('share-facebook').addEventListener('click', () => shareQuote('facebook'));
   document.getElementById('share-whatsapp').addEventListener('click', () => shareQuote('whatsapp'));
+
+  // Hamburger toggle
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('show');
+  });
+
   generateRandomQuote();
 });
