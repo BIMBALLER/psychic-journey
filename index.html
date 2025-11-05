@@ -6,10 +6,13 @@
   <title>Random Quote Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <!-- Navbar -->
+<body data-theme="light"> <!-- Default light; JS handles data-theme toggle -->
+  <!-- Mode Indicator (fixed in body, aligned with theme toggle, italic, full text) -->
+  <p id="mode-indicator">Theme-based Quotes: Light = Scriptures (Bible, Quran, Gita) | Dark = Philosophers</p>
+
+  <!-- Navbar (updated: onclick for modals) -->
   <nav class="navbar">
-    <div class="logo"><img src="image (1).jpg" alt="Logo" /></div>
+    <div class="logo"><img src="image (2).jpg" alt="Logo" /></div>
 
     <!-- Hamburger Menu -->
     <button class="hamburger" id="hamburger">
@@ -20,11 +23,44 @@
 
     <ul class="nav-links" id="navLinks">
       <li><a href="https://psychic-journey-lovat.vercel.app/">Home</a></li>
+      <li class="about-dropdown">
+        <a href="#" class="dropdown-toggle" onclick="return false;">About</a>
+        <ul class="dropdown-menu">
+          <li><a href="#" onclick="openModal('story'); return false;">My Story</a></li>
+          <li><a href="#" onclick="openModal('tech'); return false;">Tech Stack</a></li>
+          <li><a href="#" onclick="openModal('inspo'); return false;">Inspiration</a></li>
+        </ul>
+      </li>
       <li><a href="https://bimbolaportfolio.netlify.app/">Portfolio</a></li>
       <li><a href="https://github.com/BIMBALLER" target="_blank">GitHub</a></li>
       <li><a href="https://omoabizzcuisine.vercel.app/" target="_blank">OMOABIZZ</a></li>
     </ul>
   </nav>
+
+  <!-- About Modals -->
+  <div id="story-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>My Story</h2>
+      <p>From the vibrant vibes of Offa, Kwara State, to lines of code that spark journeys. I'm Bimbola, a well-taught dev chasing that psychic spark. Learning web dev at One Innovation Hub here in Offa—started tinkering with HTML in '23 during Life blackouts, quotes from the Quran kept me lit. Built this genny to blend ancient wisdom with modern flips. Light mode? Divine vibes. Dark? Deep thinks. What's your journey saying today?</p>
+    </div>
+  </div>
+
+  <div id="tech-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Tech Stack</h2>
+      <p>Vanilla JS magic with a dash of CSS vars for that seamless theme swap. Fetching scriptures from Bible/Quran/Gita APIs, philosophers via DummyJSON. LocalStorage for saves, no bloat. Hamburger for mobile flow, ripple-free (post-popup purge lol). Deployed on Vercel—fast and free,. Future? React if the vibes call yes it's calling already.</p>
+    </div>
+  </div>
+
+  <div id="inspo-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Inspiration</h2>
+      <p>"Stay hungry, stay foolish" – Steve Jobs (dark mode fuel). Quran's ease after hardship? Light mode mantra during dev droughts. OMOABIZZ cuisine site sparked; portfolio's are my designs. This quote genny? A nod to Offa resilience random wisdom for chaotic days. Inspired by One Innovation Hub sessions and conversations with Grok too convo that codes itself.</p>
+    </div>
+  </div>
 
   <!-- Theme Toggle Button -->
   <button id="themeToggle">🌙</button>

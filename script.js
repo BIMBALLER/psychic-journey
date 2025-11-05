@@ -83,6 +83,11 @@ function generateRandomQuote() {
     });
 }
 
+const change=document.getElementById("quote");
+change.onclick=function(){
+    document.body.style.backgroundColor=`#${Math.floor(Math.random()*16777215).toString(16)}`
+}
+
 function toggleTheme() {
   const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', newTheme);
@@ -130,6 +135,15 @@ function shareQuote(platform) {
   window.open(url, '_blank');
 }
 
+// Modal Functions
+function openModal(id) {
+  document.getElementById(id + '-modal').classList.add('active');
+}
+
+function closeModal(id) {
+  document.getElementById(id + '-modal').classList.remove('active');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -150,5 +164,27 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks.classList.toggle('show');
   });
 
+  // Close on X click or outside
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('close')) {
+      const modalId = e.target.closest('.modal').id.split('-')[0];
+      closeModal(modalId);
+    } else if (e.target.classList.contains('modal')) {
+      const modalId = e.target.id.split('-')[0];
+      closeModal(modalId);
+    }
+  });
+
+  // Escape key close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(modal => {
+        const modalId = modal.id.split('-')[0];
+        closeModal(modalId);
+      });
+    }
+  });
+
+  // Load initial quote on page load
   generateRandomQuote();
 });
