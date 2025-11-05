@@ -29,23 +29,22 @@ body {
   transition: background-color 0.3s ease;
 }
 
-/* Mode Indicator (fixed in body, aligned with theme toggle, italic, full text) */
 #mode-indicator {
   position: fixed;
   top: 100px;
   left: 1.5rem;
   font-size: 0.9rem;
   font-weight: bold;
-  font-style: italic; /* Added italic */
+  font-style: italic;
   color: var(--accent-color);
   padding: 0.5rem 1rem;
-  background: rgba(74, 144, 226, 0.1); /* Fixed light accent tint */
+  background: rgba(74, 144, 226, 0.1); 
   border-radius: 20px;
   border: 1px solid rgba(74, 144, 226, 0.2);
-  transition: color 0.3s ease; /* Only color transitions with theme */
-  max-width: 40%; /* Limit width for alignment, but allow full text */
+  transition: color 0.3s ease; 
+  max-width: 40%; 
   z-index: 5;
-  white-space: normal; /* Full wrap for visibility */
+  white-space: normal;
   line-height: 1.4;
 }
 
@@ -345,7 +344,10 @@ button:hover {
   font-size: 0.9rem;
 }
 
-/* Responsive */
+
+
+
+
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
@@ -373,7 +375,7 @@ button:hover {
     padding: 1rem 0;
   }
 
-  /* Mobile dropdown: stack under About li */
+  
   .about-dropdown .dropdown-menu {
     position: static;
     opacity: 1;
@@ -408,21 +410,18 @@ button:hover {
     font-size: 1rem;
   }
 
-  /* Mobile indicator: full wrap, adjusted position */
   #mode-indicator {
     font-size: 0.8rem;
     left: 1rem;
-    max-width: 60%; /* More room on mobile */
+    max-width: 60%;
     padding: 0.4rem 0.8rem;
-    top: 110px; /* Slight nudge down to avoid navbar overlap */
+    top: 110px; 
   }
 
-  /* Mobile theme toggle nudge */
   #themeToggle {
     top: 110px;
   }
-
-  /* Mobile modal tweaks */
+  
   .modal-content {
     width: 95%;
     margin: 5% auto;
