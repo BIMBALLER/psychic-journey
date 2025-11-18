@@ -8,12 +8,16 @@ const fallbackQuotes = [
   { quote: "Happiness is the highest good.", author: "Aristotle" },
   { quote: "Do not be overcome by evil, but overcome evil with good.", author: "Saint Paul" },
   { quote: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" },
+  { quote: "The universe is not only stranger than we suppose, it is stranger than we can suppose.", author: "Werner Heisenberg" },
+  { quote: "We are not human beings having a spiritual experience. We are spiritual beings having a human experience.", author: "Pierre Teilhard de Chardin" },
+
 ];
 
 const fallbackScriptures = [
   { quote: "For God so loved the world that he gave his one and only Son...", author: "Bible - John 3:16" },
   { quote: "For I know the plans I have for you, declares the Lord...", author: "Bible - Jeremiah 29:11" },
   { quote: "Indeed, with hardship comes ease.", author: "Quran - Ash-Sharh 94:6" },
+  { quote: "Indeed, Allah will not change the condition of a people until they change what is in themselves.", author: "Quran 13:11" },
   { quote: "You have a right to perform your duty, but not to the fruits of action.", author: "Bhagavad Gita - 2:47" },
 ];
 
@@ -87,7 +91,8 @@ const change=document.getElementById("quote");
 change.onclick=function(){
     document.body.style.backgroundColor=`#${Math.floor(Math.random()*16777215).toString(16)}`
 }
-
+document.body.style.background = 'linear-gradient(135deg, var(--bg-color), rgba(74,144,226,0.1))';
+setTimeout(() => document.body.style.background = '', 1500);
 function toggleTheme() {
   const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', newTheme);
