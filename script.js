@@ -1,4 +1,3 @@
-// Keep all fallback quotes
 const fallbackQuotes = [
   { quote: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Confucius" },
@@ -10,7 +9,6 @@ const fallbackQuotes = [
   { quote: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" },
   { quote: "The universe is not only stranger than we suppose, it is stranger than we can suppose.", author: "Werner Heisenberg" },
   { quote: "We are not human beings having a spiritual experience. We are spiritual beings having a human experience.", author: "Pierre Teilhard de Chardin" },
-
 ];
 
 const fallbackScriptures = [
@@ -22,19 +20,52 @@ const fallbackScriptures = [
 ];
 
 let savedQuotes = JSON.parse(localStorage.getItem('savedQuotes')) || [];
+let quoteHistory = [];
+let historyIndex = -1;
+const MAX_HISTORY = 10;
 
 function stripStrongTags(text) {
   return text.replace(/<S>\d+<\/S>/g, '');
 }
 
-function generateRandomQuote() {
+function displayQuote(quoteObj) {
   const quoteElement = document.getElementById('quote');
   const authorElement = document.getElementById('author');
+  window.currentQuote = quoteObj; 
   quoteElement.classList.remove('show');
+  
+  setTimeout(() => {
+    const text = quoteObj.quote || quoteObj.text;
+    
+    quoteElement.textContent = `"${text}"`;
+    authorElement.textContent = `- ${quoteObj.author}`;
+    quoteElement.classList.add('show');
+  }, 10);
+}
+function updateHistory(quoteObj) {
+  if (historyIndex !== quoteHistory.length - 1) {
+    quoteHistory = quoteHistory.slice(0, historyIndex + 1);
+  }
+  quoteHistory.push(quoteObj);
+  if (quoteHistory.length > MAX_HISTORY) {
+    quoteHistory.shift();
+  }
+  historyIndex = quoteHistory.length - 1;
+}
+function getTodayDateString() {
+  return new Date().toISOString().slice(0, 10);
+}
 
+async function generateRandomQuote(isQOTDCheck = false) {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const today = getTodayDateString();
+  const qotdData = JSON.parse(localStorage.getItem('qotd')) || {};
+  if (isQOTDCheck && qotdData.date === today && qotdData.theme === currentTheme) {
+      updateHistory(qotdData.quote);
+      return displayQuote(qotdData.quote);
+  }
+  
   let url, fallbackArray, selectedBook;
-
   if (currentTheme === 'dark') {
     url = 'https://dummyjson.com/quotes/random';
     fallbackArray = fallbackQuotes;
@@ -55,54 +86,105 @@ function generateRandomQuote() {
     }
   }
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      let quoteText, authorText;
-      if (currentTheme === 'dark') {
-        quoteText = data.quote;
-        authorText = data.author;
-      } else if (selectedBook === 'bible') {
-        quoteText = stripStrongTags(data.text);
-        authorText = `Bible - ${data.bookname} ${data.chapter}:${data.verse}`;
-      } else if (selectedBook === 'quran') {
-        quoteText = data.data.text;
-        authorText = `Quran - ${data.data.surah.englishName} ${data.data.numberInSurah}`;
-      } else if (selectedBook === 'gita') {
-        const en = data.data.find(t => t.lang === 'en');
-        quoteText = en.translation;
-        authorText = `Bhagavad Gita - ${data.data[0].chapter}:${data.data[0].verse}`;
-      }
-      quoteElement.textContent = `"${quoteText}"`;
-      authorElement.textContent = `- ${authorText}`;
-      setTimeout(() => quoteElement.classList.add('show'), 10);
-      window.currentQuote = { text: quoteText, author: authorText };
-    })
-    .catch(() => {
-      const random = fallbackArray[Math.floor(Math.random() * fallbackArray.length)];
-      quoteElement.textContent = `"${random.quote}"`;
-      authorElement.textContent = `- ${random.author}`;
-      setTimeout(() => quoteElement.classList.add('show'), 10);
-      window.currentQuote = { text: random.quote, author: random.author };
-    });
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = await res.json();
+    
+    let quoteText, authorText;
+    
+    if (currentTheme === 'dark') {
+      quoteText = data.quote;
+      authorText = data.author;
+    } else if (selectedBook === 'bible') {
+      quoteText = stripStrongTags(data.text);
+      authorText = `Bible - ${data.bookname} ${data.chapter}:${data.verse}`;
+    } else if (selectedBook === 'quran') {
+      quoteText = data.data.text;
+      authorText = `Quran - ${data.data.surah.englishName} ${data.data.numberInSurah}`;
+    } else if (selectedBook === 'gita') {
+      const en = data.data.find(t => t.lang === 'en');
+      quoteText = en ? en.translation : data.data[0].translation;
+      authorText = `Bhagavad Gita - ${data.data[0].chapter}:${data.data[0].verse}`;
+    }
+    
+    const newQuote = { quote: quoteText, author: authorText };
+    updateHistory(newQuote);
+    displayQuote(newQuote);
+    if (isQOTDCheck && qotdData.date !== today) {
+        localStorage.setItem('qotd', JSON.stringify({ date: today, theme: currentTheme, quote: newQuote }));
+    }
+
+  } catch (error) {
+    console.error('API Fetch Failed, falling back:', error);
+    const random = fallbackArray[Math.floor(Math.random() * fallbackArray.length)];
+    const newQuote = { quote: random.quote, author: random.author };
+    updateHistory(newQuote);
+    displayQuote(newQuote);
+  }
+}
+function showPreviousQuote() {
+  if (historyIndex > 0) {
+    historyIndex--;
+    displayQuote(quoteHistory[historyIndex]);
+  } else {
+    const statusSpan = document.getElementById('copy-status');
+    statusSpan.textContent = 'History Start!';
+    statusSpan.style.opacity = '1';
+    setTimeout(() => {
+      statusSpan.style.opacity = '0';
+    }, 1500);
+  }
+}
+function copyQuote() {
+  if (!window.currentQuote) return;
+  const text = window.currentQuote.quote || window.currentQuote.text; 
+  const author = window.currentQuote.author;
+  const quoteString = `"${text}" - ${author}`;
+  const statusSpan = document.getElementById('copy-status');
+  
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(quoteString)
+      .then(() => {
+        statusSpan.textContent = 'Copied!';
+        statusSpan.style.opacity = '1';
+        setTimeout(() => {
+          statusSpan.style.opacity = '0';
+        }, 1500);
+      })
+      .catch(err => {
+        statusSpan.textContent = 'Failed to copy.';
+        statusSpan.style.opacity = '1';
+        console.error('Could not copy text: ', err);
+        setTimeout(() => {
+          statusSpan.style.opacity = '0';
+        }, 1500);
+      });
+  } else {
+    statusSpan.textContent = 'API not supported.';
+    statusSpan.style.opacity = '1';
+    console.error('Clipboard API not supported.');
+    setTimeout(() => {
+      statusSpan.style.opacity = '0';
+    }, 1500);
+  }
 }
 
-const change=document.getElementById("quote");
-change.onclick=function(){
-    document.body.style.backgroundColor=`#${Math.floor(Math.random()*16777215).toString(16)}`
-}
-document.body.style.background = 'linear-gradient(135deg, var(--bg-color), rgba(74,144,226,0.1))';
-setTimeout(() => document.body.style.background = '', 1500);
+
 function toggleTheme() {
   const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', newTheme);
   document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
   localStorage.setItem('theme', newTheme);
-  generateRandomQuote();
+  generateRandomQuote(false); 
 }
 
 function saveQuote() {
   if (!window.currentQuote) return alert('No quote to save!');
+  const currentQuoteText = window.currentQuote.quote || window.currentQuote.text;
+  const isDuplicate = savedQuotes.some(q => q.quote === currentQuoteText && q.author === window.currentQuote.author);
+  if (isDuplicate) return alert('This quote is already saved!');
+  
   savedQuotes.push(window.currentQuote);
   localStorage.setItem('savedQuotes', JSON.stringify(savedQuotes));
   alert('Quote saved!');
@@ -114,7 +196,8 @@ function showSavedQuotes() {
   if (!savedQuotes.length) return (div.innerHTML += '<p>No saved quotes yet.</p>');
   savedQuotes.forEach((q, i) => {
     const p = document.createElement('p');
-    p.textContent = `"${q.text}" - ${q.author}`;
+    const quoteText = q.quote || q.text; 
+    p.textContent = `"${quoteText}" - ${q.author}`; 
     const btn = document.createElement('button');
     btn.textContent = 'Delete';
     btn.onclick = () => deleteQuote(i);
@@ -131,8 +214,9 @@ function deleteQuote(i) {
 
 function shareQuote(platform) {
   if (!window.currentQuote) return alert('No quote to share!');
-  const { text, author } = window.currentQuote;
-  const shareText = `${text} - ${author}`;
+  const quoteText = window.currentQuote.quote || window.currentQuote.text;
+  const { author } = window.currentQuote; 
+  const shareText = `"${quoteText}" - ${author}`;
   let url;
   if (platform === 'twitter') url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
   if (platform === 'facebook') url = `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(shareText)}`;
@@ -140,7 +224,6 @@ function shareQuote(platform) {
   window.open(url, '_blank');
 }
 
-// Modal Functions
 function openModal(id) {
   document.getElementById(id + '-modal').classList.add('active');
 }
@@ -148,28 +231,45 @@ function openModal(id) {
 function closeModal(id) {
   document.getElementById(id + '-modal').classList.remove('active');
 }
+document.addEventListener('keydown', (e) => {
+  if (document.querySelector('.modal.active') || 
+      e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    return;
+  }
+  if (e.code === 'Space') {
+    e.preventDefault(); 
+    document.getElementById('quote-button').click();
+  }
+  else if (e.key === 's' || e.key === 'S') {
+    e.preventDefault(); 
+    document.getElementById('save-button').click();
+  }
+  else if (e.key === 'ArrowLeft') {
+    e.preventDefault(); 
+    showPreviousQuote();
+  }
+});
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-  document.getElementById('quote-button').addEventListener('click', generateRandomQuote);
+  document.getElementById('quote-button').addEventListener('click', () => generateRandomQuote(false));
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
   document.getElementById('save-button').addEventListener('click', saveQuote);
   document.getElementById('show-saved-button').addEventListener('click', showSavedQuotes);
   document.getElementById('share-twitter').addEventListener('click', () => shareQuote('twitter'));
   document.getElementById('share-facebook').addEventListener('click', () => shareQuote('facebook'));
   document.getElementById('share-whatsapp').addEventListener('click', () => shareQuote('whatsapp'));
-
-  // Hamburger toggle
+  document.getElementById('copy-button').addEventListener('click', copyQuote);
+  document.getElementById('prev-quote-button').addEventListener('click', showPreviousQuote);
   const hamburger = document.getElementById('hamburger');
   const navLinks = document.getElementById('navLinks');
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
     navLinks.classList.toggle('show');
   });
-
-  // Close on X click or outside
   document.addEventListener('click', (e) => {
     if (e.target.classList.contains('close')) {
       const modalId = e.target.closest('.modal').id.split('-')[0];
@@ -179,8 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal(modalId);
     }
   });
-
-  // Escape key close
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal.active').forEach(modal => {
@@ -189,7 +287,5 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-
-  // Load initial quote on page load
-  generateRandomQuote();
+  generateRandomQuote(true); 
 });

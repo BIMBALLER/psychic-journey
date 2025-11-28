@@ -68,10 +68,20 @@
     <div class="quote-box">
       <p id="quote">Click the button to get a quote</p>
       <p id="author"></p>
+      <button id="copy-button" class="action-btn" title="Copy to Clipboard">📋</button>
+      <span id="copy-status"></span>
     </div>
-    <button id="quote-button">Get New Quote</button>
-    <button id="save-button">Save Quote</button>
+    
+    <!-- Previous Quote Button -->
+    <button id="prev-quote-button" class="action-btn">Previous Quote (←)</button>
+    
+    <button id="quote-button">Get New Quote (Space)</button>
+    <button id="save-button">Save Quote (S)</button>
     <button id="show-saved-button">Show Saved Quotes</button>
+    
+    <!-- NEW: Keyboard Shortcut Hint -->
+    <p class="keyboard-hint">Keyboard: Space=New | ←=Prev | S=Save</p>
+
     <div class="quote-box" id="saved-quotes"></div>
   </div>
 
