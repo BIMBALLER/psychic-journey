@@ -66,14 +66,17 @@ function updateHistory(quoteObj) {
 }
 
 // ==========================
-// FETCH LOGIC
+// FETCH LOGIC – with strong error handling
 // ==========================
 async function fetchDarkQuote() {
   try {
     const res = await fetch("https://dummyjson.com/quotes/random");
+    if (!res.ok) throw new Error(`DummyJSON failed: ${res.status}`);
     const data = await res.json();
+    if (!data.quote || !data.author) throw new Error("Invalid quote data");
     return { quote: data.quote, author: data.author };
-  } catch {
+  } catch (err) {
+    console.warn("Dark quote fetch failed → using fallback", err);
     return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
   }
 }
@@ -83,34 +86,63 @@ async function fetchLightQuote() {
   const selectedBook = holyBooks[Math.floor(Math.random() * holyBooks.length)];
 
   try {
+    let quoteObj;
     if (selectedBook === "bible") {
       const res = await fetch("https://bolls.life/get-random-verse/KJV/");
+      if (!res.ok) throw new Error(`Bible API: ${res.status}`);
       const data = await res.json();
-      return { quote: data.text.replace(/<S>\d+<\/S>/g, ""), author: `Bible - ${data.bookname} ${data.chapter}:${data.verse}` };
+      if (!data.text) throw new Error("No verse text");
+      quoteObj = {
+        quote: data.text.replace(/<S>\d+<\/S>/g, ""),
+        author: `Bible - ${data.bookname} ${data.chapter}:${data.verse}`
+      };
     } else if (selectedBook === "quran") {
       const randomAyah = Math.floor(Math.random() * 6236) + 1;
       const res = await fetch(`https://api.alquran.cloud/v1/ayah/${randomAyah}/en.sahih`);
+      if (!res.ok) throw new Error(`Quran API: ${res.status}`);
       const data = await res.json();
-      return { quote: data.data.text, author: `Quran - ${data.data.surah.englishName} ${data.data.numberInSurah}` };
-    } else if (selectedBook === "gita") {
+      if (!data.data?.text) throw new Error("No ayah text");
+      quoteObj = {
+        quote: data.data.text,
+        author: `Quran - ${data.data.surah.englishName} ${data.data.numberInSurah}`
+      };
+    } else { // gita
       const randomCh = Math.floor(Math.random() * 18) + 1;
       const randomVerse = Math.floor(Math.random() * 47) + 1;
       const res = await fetch(`https://bhagavadgita.theaum.org/text/translations/${randomCh}/${randomVerse}`);
+      if (!res.ok) throw new Error(`Gita API: ${res.status}`);
       const data = await res.json();
-      const en = data.data.find(t => t.lang === "en");
-      return { quote: en ? en.translation : data.data[0].translation, author: `Bhagavad Gita - ${data.data[0].chapter}:${data.data[0].verse}` };
+      const translation = data.data?.find(t => t.lang === "en")?.translation || data.data?.[0]?.translation;
+      if (!translation) throw new Error("No Gita translation");
+      quoteObj = {
+        quote: translation,
+        author: `Bhagavad Gita - ${data.data[0].chapter}:${data.data[0].verse}`
+      };
     }
-  } catch {
+    return quoteObj;
+  } catch (err) {
+    console.warn("Light quote fetch failed → using fallback", err);
     return fallbackScriptures[Math.floor(Math.random() * fallbackScriptures.length)];
   }
 }
 
 // ==========================
-// MAIN DRAW FUNCTION
+// MAIN DRAW FUNCTION – catches all errors
 // ==========================
 async function generateRandomQuote() {
   const theme = document.documentElement.getAttribute("data-theme") || "light";
-  const quoteObj = theme === "dark" ? await fetchDarkQuote() : await fetchLightQuote();
+  let quoteObj;
+
+  try {
+    quoteObj = theme === "dark" ? await fetchDarkQuote() : await fetchLightQuote();
+  } catch (err) {
+    console.error("Quote generation failed:", err);
+    quoteEl.textContent = "The cosmos is taking a moment to breathe...";
+    authorEl.textContent = "— Try again in a few seconds";
+    quoteEl.classList.add("show");
+    return;
+  }
+
   updateHistory(quoteObj);
   displayQuote(quoteObj);
 }
@@ -140,7 +172,6 @@ function showSavedQuotes() {
   const button = document.getElementById("show-saved-button");
 
   if (section.classList.contains("hidden")) {
-    // Show
     div.innerHTML = "<h3>Saved Readings</h3>";
     if (!state.savedQuotes.length) {
       div.innerHTML += "<p>No saved readings yet.</p>";
@@ -158,7 +189,6 @@ function showSavedQuotes() {
     section.classList.remove("hidden");
     button.textContent = "Hide Saved";
   } else {
-    // Hide
     section.classList.add("hidden");
     button.textContent = "Show Saved";
   }
@@ -170,7 +200,7 @@ function deleteQuote(i) {
   
   const section = document.getElementById("saved-section");
   if (!section.classList.contains("hidden")) {
-    showSavedQuotes();  // re-render if visible
+    showSavedQuotes();
   }
 }
 
@@ -213,7 +243,7 @@ function openModal(id) {
 }
 
 // ==========================
-// INIT
+// INIT + AI CHAT FEATURE
 // ==========================
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme") || "light";
@@ -237,11 +267,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const isHome = link.getAttribute("href") === "/" || link.textContent.trim().toLowerCase() === "home";
       const isAlreadyHome = window.location.pathname === "/" || window.location.pathname.endsWith("index.html");
 
-      // Always close menu
       hamburger.classList.remove("active");
       navLinks.classList.remove("show");
 
-      // Prevent Home → Home reload
       if (isHome && isAlreadyHome) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -250,4 +278,67 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   generateRandomQuote();
+
+  // ───────────────────────────────────────────────
+  // Ask Cosmic Guide (AI Chat) – FIXED VERSION
+  // ───────────────────────────────────────────────
+  const askBtn = document.getElementById('ask-grok-btn');
+  const grokModal = document.getElementById('grok-modal');
+  const closeGrok = document.getElementById('close-grok');
+  const grokInput = document.getElementById('grok-input');
+  const sendGrok = document.getElementById('send-grok');
+  const chatHistory = document.getElementById('chat-history');
+
+  if (askBtn && grokModal) {
+    askBtn.onclick = () => {
+      grokModal.style.display = 'flex';
+      grokInput.focus();
+    };
+
+    closeGrok.onclick = () => {
+      grokModal.style.display = 'none';
+    };
+
+    grokModal.onclick = (e) => {
+      if (e.target === grokModal) grokModal.style.display = 'none';
+    };
+
+    async function sendMessage() {
+      const text = grokInput.value.trim();
+      if (!text) return;
+
+      chatHistory.innerHTML += `<p><strong>You:</strong> ${text}</p>`;
+      grokInput.value = '';
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try {
+        const res = await fetch('/api/ask-grok', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        chatHistory.innerHTML += `<p><strong>Cosmic Guide:</strong> ${data.reply}</p>`;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      } catch (err) {
+        chatHistory.innerHTML += `<p style="color: #dc3545;">Error: ${err.message || 'Could not connect to AI'}</p>`;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+    }
+
+    sendGrok.onclick = sendMessage;
+    grokInput.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    };
+  } else {
+    console.warn('AI chat elements missing – check HTML IDs');
+  }
 });

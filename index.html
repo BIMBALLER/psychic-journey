@@ -104,6 +104,22 @@
     </div>
 
   </div>
+  <!-- Add near the end of body -->
+<button id="ask-grok-btn" style="position: fixed; bottom: 20px; right: 20px; background: #7ed321; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000;">
+  🪬
+</button>
+
+<div id="grok-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div style="background:var(--card-bg); border-radius:16px; width:90%; max-width:500px; padding:2rem; max-height:80vh; overflow-y:auto; position:relative;">
+    <button id="close-grok" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:2rem; cursor:pointer;">×</button>
+    <h2>Ask the Cosmic Guide</h2>
+    <div id="chat-history" style="min-height:200px; margin:1rem 0; padding:1rem; background:rgba(0,0,0,0.1); border-radius:8px;"></div>
+    <div style="display:flex; gap:10px;">
+      <input id="grok-input" type="text" placeholder="Ask about this reading or anything spiritual..." style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+      <button id="send-grok">Send</button>
+    </div>
+  </div>
+</div>
 
   <!-- Share Buttons -->
   <div id="share-buttons">
