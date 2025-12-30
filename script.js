@@ -38,6 +38,8 @@ const state = {
 const quoteEl = document.getElementById("quote");
 const authorEl = document.getElementById("author");
 const statusEl = document.getElementById("copy-status");
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
 
 // ==========================
 // UTILITIES
@@ -174,6 +176,24 @@ function toggleTheme() {
 }
 
 // ==========================
+// MODAL LOGIC
+// ==========================
+function openModal(id) {
+  const modal = document.getElementById(`${id}-modal`);
+  if (!modal) return;
+  modal.classList.add("active");
+
+  const closeBtn = modal.querySelector(".close");
+  closeBtn.onclick = () => modal.classList.remove("active");
+
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      modal.classList.remove("active");
+    }
+  };
+}
+
+// ==========================
 // INIT
 // ==========================
 document.addEventListener("DOMContentLoaded", () => {
@@ -186,6 +206,29 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("show-saved-button").onclick = showSavedQuotes;
   document.getElementById("copy-button").onclick = copyQuote;
   document.getElementById("themeToggle").onclick = toggleTheme;
+
+  // Hamburger menu
+  hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    navLinks.classList.toggle("show");
+  });
+
+  navLinks.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", (e) => {
+      const isHome = link.getAttribute("href") === "/" || link.textContent.trim().toLowerCase() === "home";
+      const isAlreadyHome = window.location.pathname === "/" || window.location.pathname.endsWith("index.html");
+
+      // Always close menu
+      hamburger.classList.remove("active");
+      navLinks.classList.remove("show");
+
+      // Prevent Home → Home reload
+      if (isHome && isAlreadyHome) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  });
 
   generateRandomQuote();
 });
