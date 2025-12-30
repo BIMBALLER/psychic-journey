@@ -417,38 +417,104 @@ button:hover {
 /* =========================
    RESPONSIVE STYLES
 ========================= */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 90%;
+    margin-top: 120px;
+  }
+  #quote { font-size: 1.1rem; }
+}
+
 @media (max-width: 768px) {
   .hamburger { display: flex; }
-  .nav-links { display: none; flex-direction: column; width: 100%; position: absolute; top: 70px; left: 0; background: var(--card-bg); box-shadow: var(--shadow); text-align: center; }
-  .nav-links.show { display: flex; }
-  .nav-links li { padding: 1rem 0; border-bottom: 1px solid var(--border-color); }
-
-  .container { 
-    margin-top: 120px; 
-    padding: 1.5rem; 
-    max-height: 40vh; 
-    overflow-y: auto; 
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    text-align: center;
   }
-  
-  .quote-box { 
-    padding-bottom: 15px; 
+  .nav-links.show { display: flex; }
+  .nav-links li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .container {
+    margin-top: 200px;
+    padding: 1.5rem;
+    max-height: 55vh;
+    overflow-y: hidden; /* hide scroll, only for saved quotes it will scroll */
+    backdrop-filter: blur(5px); /* semi-transparent look for background GIF */
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .quote-box {
+    padding-bottom: 20px;
   }
 
   #quote { font-size: 1.05rem; }
-  button { width: 100%; margin: 0.4rem 0; }
+
+  /* ACTION BUTTONS - 2 PER ROW */
+  #prev-quote-button,
+  #quote-button,
+  #save-button,
+  #show-saved-button {
+    width: 48%;
+    margin: 0.4rem 1%;
+    display: inline-block;
+  }
+
   #copy-button { position: static; margin-top: 0.5rem; }
+
+  /* SHARE BUTTONS - 2 PER ROW */
+  #share-buttons button {
+    width: 48%;
+    margin: 0.4rem 1%;
+    display: inline-block;
+  }
+
   #themeToggle { top: 75px; right: 15px; }
-  .bg-animation { background-position: center top; }
+
+  /* Background GIF always visible */
+  .bg-animation {
+    background-size: cover;
+    background-position: center top;
+    opacity: 0.25;
+  }
 }
 
 @media (max-width: 480px) {
-  .container { 
-    padding: 1.2rem; 
-    max-height: 30vh; 
-    overflow-y: auto; 
+  .container {
+    margin-top: 90px;
+    padding: 1rem;
+    max-height: 50vh;
+    overflow-y: hidden;
+    background: rgba(255, 255, 255, 0.8);
   }
-  .quote-box { padding-bottom: 10px; }
+
+  .quote-box { padding-bottom: 5px; }
   #quote { font-size: 1rem; }
+
+  /* ACTION BUTTONS - 2 PER ROW */
+  #prev-quote-button,
+  #quote-button,
+  #save-button,
+  #show-saved-button {
+    width: 48%;
+    margin: 0.3rem 1%;
+  }
+
+  /* SHARE BUTTONS - 2 PER ROW */
+  #share-buttons button {
+    width: 48%;
+    margin: 0.3rem 1%;
+  }
+
   .navbar { font-size: 0.9rem; }
   .bg-animation { background-position: center top; }
 }
