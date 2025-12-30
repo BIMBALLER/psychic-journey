@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Quote Generator</title>
+  <title>Psychic Journey – Daily Guidance</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-theme="light">
-  <p id="mode-indicator">Theme-based Quotes: Light = Scriptures (Bible, Quran, Gita) | Dark = Philosophers</p>
+  <div class="bg-animation"><img src="Gemini_Generated_Image_ehx8vsehx8vsehx8.png" alt=""></div>
+  <p id="mode-indicator">
+    Light Mode: Sacred Guidance · Dark Mode: Philosophers
+  </p>
 
   <nav class="navbar">
-    <div class="logo"><img src="image (2).jpg" alt="Logo" /></div>
+    <div class="logo">
+      <img src="image (2).jpg" alt="Psychic Journey Logo" />
+    </div>
 
-    <!-- Hamburger Menu -->
     <button class="hamburger" id="hamburger">
       <span class="bar"></span>
       <span class="bar"></span>
@@ -40,7 +44,10 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>My Story</h2>
-      <p>From the vibrant vibes of Offa, Kwara State, to lines of code that spark journeys. I'm Bimbola, a well-taught dev chasing that psychic spark. Learning web dev at One Innovation Hub here in Offa—started tinkering with HTML in '23 during Life blackouts, quotes from the Quran kept me lit. Built this genny to blend ancient wisdom with modern flips. Light mode? Divine vibes. Dark? Deep thinks. What's your journey saying today?</p>
+      <p>
+        Psychic Journey was born from late-night inspiration, blending ancient wisdom and modern frontend craft.
+        Light mode draws from sacred texts, while dark mode delivers philosophical guidance.
+      </p>
     </div>
   </div>
 
@@ -48,7 +55,9 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Tech Stack</h2>
-      <p>Vanilla JS magic with a dash of CSS vars for that seamless theme swap. Fetching scriptures from Bible/Quran/Gita APIs, philosophers via DummyJSON. LocalStorage for saves, no bloat. Hamburger for mobile flow, ripple-free (post-popup purge lol). Deployed on Vercel—fast and free,. Future? React if the vibes call yes it's calling already.</p>
+      <p>
+        HTML · CSS Variables · Vanilla JavaScript · External APIs · LocalStorage · Responsive UI · Vercel Deployment
+      </p>
     </div>
   </div>
 
@@ -56,7 +65,9 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Inspiration</h2>
-      <p>"Stay hungry, stay foolish" – Steve Jobs (dark mode fuel). Quran's ease after hardship? Light mode mantra during dev droughts. OMOABIZZ cuisine site sparked; portfolio's are my designs. This quote genny? A nod to Offa resilience random wisdom for chaotic days. Inspired by One Innovation Hub sessions and conversations with Grok too convo that codes itself.</p>
+      <p>
+        Inspired by sacred scriptures, philosophy, and the idea that wisdom appears when we pause and reflect.
+      </p>
     </div>
   </div>
 
@@ -66,21 +77,18 @@
   <!-- Main Content -->
   <div class="container">
     <div class="quote-box">
-      <p id="quote">Click the button to get a quote</p>
+      <p id="quote">Draw your guidance</p>
       <p id="author"></p>
-      <button id="copy-button" class="action-btn" title="Copy to Clipboard">📋</button>
+      <button id="copy-button" class="action-btn" title="Copy Guidance">📋</button>
       <span id="copy-status"></span>
     </div>
-    
-    <!-- Previous Quote Button -->
-    <button id="prev-quote-button" class="action-btn">Previous Quote (←)</button>
-    
-    <button id="quote-button">Get New Quote (Space)</button>
-    <button id="save-button">Save Quote (S)</button>
-    <button id="show-saved-button">Show Saved Quotes</button>
-    
-    <!-- NEW: Keyboard Shortcut Hint -->
-    <p class="keyboard-hint">Keyboard: Space=New | ←=Prev | S=Save</p>
+
+    <button id="prev-quote-button" class="action-btn">Previous Message</button>
+    <button id="quote-button">Draw Guidance</button>
+    <button id="save-button">Save Reading</button>
+    <button id="show-saved-button">Show Saved Readings</button>
+
+    <p class="keyboard-hint">Keyboard: Space = Draw | ← = Previous | S = Save</p>
 
     <div class="quote-box" id="saved-quotes"></div>
   </div>
