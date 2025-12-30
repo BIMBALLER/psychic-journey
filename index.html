@@ -45,7 +45,7 @@
   <!-- About Modals -->
   <div id="story-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close">×</span>
       <h2>My Story</h2>
       <p>
         Psychic Journey was born from late-night inspiration, blending ancient wisdom and modern frontend craft.
@@ -56,7 +56,7 @@
 
   <div id="tech-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close">×</span>
       <h2>Tech Stack</h2>
       <p>
         HTML · CSS Variables · Vanilla JavaScript · External APIs · LocalStorage · Responsive UI · Vercel Deployment
@@ -66,7 +66,7 @@
 
   <div id="inspo-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close">×</span>
       <h2>Inspiration</h2>
       <p>
         Inspired by sacred scriptures, philosophy, and the idea that wisdom appears when we pause and reflect.
@@ -79,21 +79,30 @@
 
   <!-- Main Content -->
   <div class="container">
-    <div class="quote-box">
-      <p id="quote">Draw your guidance</p>
-      <p id="author"></p>
-      <button id="copy-button" class="action-btn" title="Copy Guidance">📋</button>
-      <span id="copy-status"></span>
+
+    <div class="current-reading">
+      <div class="quote-box">
+        <p id="quote">Draw your guidance</p>
+        <p id="author"></p>
+        <button id="copy-button" class="action-btn" title="Copy Guidance">📋</button>
+        <span id="copy-status"></span>
+      </div>
+
+      <div class="action-row">
+        <button id="prev-quote-button" class="action-btn">Previous Message</button>
+        <button id="quote-button">Draw Guidance</button>
+        <button id="save-button">Save Reading</button>
+        <button id="show-saved-button">Show Saved</button>
+      </div>
+
+      <p class="keyboard-hint">Keyboard: Space = Draw | ← = Previous | S = Save</p>
     </div>
 
-    <button id="prev-quote-button" class="action-btn">Previous Message</button>
-    <button id="quote-button">Draw Guidance</button>
-    <button id="save-button">Save Reading</button>
-    <button id="show-saved-button">Show Saved Readings</button>
+    <!-- Saved section – starts hidden -->
+    <div class="saved-section hidden" id="saved-section">
+      <div id="saved-quotes"></div>
+    </div>
 
-    <p class="keyboard-hint">Keyboard: Space = Draw | ← = Previous | S = Save</p>
-
-    <div class="quote-box" id="saved-quotes"></div>
   </div>
 
   <!-- Share Buttons -->

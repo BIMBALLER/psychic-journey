@@ -135,24 +135,43 @@ function saveQuote() {
 }
 
 function showSavedQuotes() {
+  const section = document.getElementById("saved-section");
   const div = document.getElementById("saved-quotes");
-  div.innerHTML = "<h3>Saved Readings</h3>";
-  if (!state.savedQuotes.length) return div.innerHTML += "<p>No saved readings yet.</p>";
-  state.savedQuotes.forEach((q, i) => {
-    const p = document.createElement("p");
-    p.textContent = `"${q.quote}" - ${q.author}`;
-    const btn = document.createElement("button");
-    btn.textContent = "Delete";
-    btn.onclick = () => deleteQuote(i);
-    p.appendChild(btn);
-    div.appendChild(p);
-  });
+  const button = document.getElementById("show-saved-button");
+
+  if (section.classList.contains("hidden")) {
+    // Show
+    div.innerHTML = "<h3>Saved Readings</h3>";
+    if (!state.savedQuotes.length) {
+      div.innerHTML += "<p>No saved readings yet.</p>";
+    } else {
+      state.savedQuotes.forEach((q, i) => {
+        const p = document.createElement("p");
+        p.innerHTML = `"${q.quote}"<br><em>- ${q.author}</em>`;
+        const btn = document.createElement("button");
+        btn.textContent = "×";
+        btn.onclick = () => deleteQuote(i);
+        p.appendChild(btn);
+        div.appendChild(p);
+      });
+    }
+    section.classList.remove("hidden");
+    button.textContent = "Hide Saved";
+  } else {
+    // Hide
+    section.classList.add("hidden");
+    button.textContent = "Show Saved";
+  }
 }
 
 function deleteQuote(i) {
   state.savedQuotes.splice(i, 1);
   localStorage.setItem("savedQuotes", JSON.stringify(state.savedQuotes));
-  showSavedQuotes();
+  
+  const section = document.getElementById("saved-section");
+  if (!section.classList.contains("hidden")) {
+    showSavedQuotes();  // re-render if visible
+  }
 }
 
 function copyQuote() {
