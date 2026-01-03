@@ -346,6 +346,11 @@ button:hover {
   font-style: italic;
   animation: glow 1.5s ease;
 }
+
+/* ────────────────────────────────────────────────
+   RESPONSIVE STYLES
+───────────────────────────────────────────────── */
+
 @media (max-width: 1024px) { 
   .container { max-width: 90%; } 
   #quote { font-size: 1.1rem; } 
@@ -353,56 +358,77 @@ button:hover {
 
 @media (max-width: 768px) {
   .hamburger { display: flex; }
+
   .nav-links { 
     display: none; 
     flex-direction: column; 
     width: 100%; 
-    position: fixed; 
-    top: 60px;               
+    position: absolute; 
+    top: 78px;                          /* clear separation from navbar bottom */
     left: 0; 
     background: var(--card-bg); 
     box-shadow: var(--shadow); 
     text-align: center; 
   }
-  .nav-links.show { 
-    display:
-     flex;
-  }
-  .nav-links li {
-    padding: 1rem 0;
+
+  .nav-links.show { display: flex; }
+
+  .nav-links li { 
+    padding: 1rem 0; 
     border-bottom: 1px solid var(--border-color); 
   }
-  .container {
-   margin-top: 160px;
-   padding: 1.2rem 1rem; }
-  .action-row button {
-   flex: 1 1 48%;
-   max-width: none; 
+
+  .container { 
+    margin-top: 160px; 
+    padding: 1.2rem 1rem; 
   }
-  #copy-button {
-   position: static; 
-   margin: 1rem auto 0; 
-   display: block; 
-   width: 50px; 
-   height: 50px; 
-   font-size: 1.4rem; 
+
+  .action-row button { 
+    flex: 1 1 48%; 
+    max-width: none; 
+  }
+
+  #copy-button { 
+    position: static; 
+    margin: 1rem auto 0; 
+    display: block; 
+    width: 50px; 
+    height: 50px; 
+    font-size: 1.4rem; 
+  }
+
+  /* Theme toggle clearly separated from hamburger on mobile */
+  #themeToggle {
+    top: 80px;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-     margin-top: 140px; 
-     padding: 1rem 0.8rem; 
-    }
+  .container { 
+    margin-top: 140px; 
+    padding: 1rem 0.8rem; 
+  }
+
   #quote { 
     font-size: 1.05rem; 
     line-height: 1.45; 
   }
-  .action-row {
-     gap: 8px;
-   }
-  .action-row button {
-     padding: 10px 16px; 
-     font-size: 0.95rem; 
-    }
+
+  .action-row { 
+    gap: 8px; 
+  }
+
+  .action-row button { 
+    padding: 10px 16px; 
+    font-size: 0.95rem; 
+  }
+
+  #themeToggle {
+    top: 62px;
+    right: 0.8rem;
+  }
 }
