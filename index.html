@@ -6,9 +6,9 @@
   <title>Psychic Journey – Daily Guidance</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body data-theme="light">
 
-  <!-- Background GIF -->
   <div class="bg-animation"></div>
 
   <p id="mode-indicator">
@@ -24,33 +24,30 @@
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
+      <span class="bar"></span>
     </button>
 
     <ul class="nav-links" id="navLinks">
-      <li><a href="https://psychic-journey-lovat.vercel.app/">Home</a></li>
+      <li><a href="#">Home</a></li>
       <li class="about-dropdown">
-        <a href="#" class="dropdown-toggle" onclick="return false;">About</a>
+        <a href="#" onclick="return false;">About</a>
         <ul class="dropdown-menu">
-          <li><a href="#" onclick="openModal('story'); return false;">My Story</a></li>
-          <li><a href="#" onclick="openModal('tech'); return false;">Tech Stack</a></li>
-          <li><a href="#" onclick="openModal('inspo'); return false;">Inspiration</a></li>
+          <li><a href="#" onclick="openModal('story');return false;">My Story</a></li>
+          <li><a href="#" onclick="openModal('tech');return false;">Tech Stack</a></li>
+          <li><a href="#" onclick="openModal('inspo');return false;">Inspiration</a></li>
         </ul>
       </li>
-      <li><a href="https://bimbolaportfolio.netlify.app/">Portfolio</a></li>
       <li><a href="https://github.com/BIMBALLER" target="_blank">GitHub</a></li>
-      <li><a href="https://omoabizzcuisine.vercel.app/" target="_blank">OMOABIZZ</a></li>
+      <li><a href="https://bimbolaportfolio.netlify.app/" target="_blank">Portfolio</a></li>
     </ul>
   </nav>
 
-  <!-- About Modals -->
+  <!-- Modals -->
   <div id="story-modal" class="modal">
     <div class="modal-content">
       <span class="close">×</span>
       <h2>My Story</h2>
-      <p>
-        Psychic Journey was born from late-night inspiration, blending ancient wisdom and modern frontend craft.
-        Light mode draws from sacred texts, while dark mode delivers philosophical guidance.
-      </p>
+      <p>Psychic Journey blends ancient wisdom with modern frontend craft.</p>
     </div>
   </div>
 
@@ -58,9 +55,7 @@
     <div class="modal-content">
       <span class="close">×</span>
       <h2>Tech Stack</h2>
-      <p>
-        HTML · CSS Variables · Vanilla JavaScript · External APIs · LocalStorage · Responsive UI · Vercel Deployment
-      </p>
+      <p>HTML · CSS · Vanilla JavaScript · LocalStorage · Vercel</p>
     </div>
   </div>
 
@@ -68,60 +63,49 @@
     <div class="modal-content">
       <span class="close">×</span>
       <h2>Inspiration</h2>
-      <p>
-        Inspired by sacred scriptures, philosophy, and the idea that wisdom appears when we pause and reflect.
-      </p>
+      <p>Wisdom reveals itself when silence meets curiosity.</p>
     </div>
   </div>
 
-  <!-- Theme Toggle Button -->
   <button id="themeToggle">🌙</button>
 
-  <!-- Main Content -->
   <div class="container">
-
     <div class="current-reading">
       <div class="quote-box">
         <p id="quote">Draw your guidance</p>
         <p id="author"></p>
-        <button id="copy-button" class="action-btn" title="Copy Guidance">📋</button>
+        <button id="copy-button">📋</button>
         <span id="copy-status"></span>
       </div>
 
       <div class="action-row">
-        <button id="prev-quote-button" class="action-btn">Previous Message</button>
+        <button id="prev-quote-button">Previous</button>
         <button id="quote-button">Draw Guidance</button>
-        <button id="save-button">Save Reading</button>
+        <button id="save-button">Save</button>
         <button id="show-saved-button">Show Saved</button>
       </div>
-
-      <p class="keyboard-hint">Keyboard: Space = Draw | ← = Previous | S = Save</p>
     </div>
 
-    <!-- Saved section – starts hidden -->
     <div class="saved-section hidden" id="saved-section">
       <div id="saved-quotes"></div>
     </div>
-
   </div>
-  <!-- Add near the end of body -->
-<button id="ask-grok-btn" style="position: fixed; bottom: 20px; right: 20px; background: #7ed321; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000;">
-  🪬
-</button>
 
-<div id="grok-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
-  <div style="background:var(--card-bg); border-radius:16px; width:90%; max-width:500px; padding:2rem; max-height:80vh; overflow-y:auto; position:relative;">
-    <button id="close-grok" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:2rem; cursor:pointer;">×</button>
-    <h2>Ask the Cosmic Guide</h2>
-    <div id="chat-history" style="min-height:200px; margin:1rem 0; padding:1rem; background:rgba(0,0,0,0.1); border-radius:8px;"></div>
-    <div style="display:flex; gap:10px;">
-      <input id="grok-input" type="text" placeholder="Ask about this reading or anything spiritual..." style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-      <button id="send-grok">Send</button>
+  <!-- ORACLE BUTTON -->
+  <button id="ask-oracle-btn">🪬</button>
+
+  <!-- ORACLE MODAL -->
+  <div id="oracle-modal">
+    <div class="oracle-box">
+      <button id="close-oracle">×</button>
+      <h2>Ask the Oracle</h2>
+      <div id="oracle-response"></div>
+      <input id="oracle-input" placeholder="Ask your question…" />
+      <button id="oracle-send">Reveal</button>
     </div>
   </div>
-</div>
 
-  <!-- Share Buttons -->
+  <!-- SHARE -->
   <div id="share-buttons">
     <button id="share-twitter">Twitter</button>
     <button id="share-facebook">Facebook</button>
