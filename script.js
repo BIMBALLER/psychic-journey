@@ -1,6 +1,3 @@
-// ==========================
-// FALLBACK QUOTES
-// ==========================
 const fallbackQuotes = [
   { quote: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Confucius" },
@@ -14,9 +11,6 @@ const fallbackQuotes = [
   { quote: "We are not human beings having a spiritual experience. We are spiritual beings having a human experience.", author: "Pierre Teilhard de Chardin" }
 ];
 
-// ==========================
-// FALLBACK SCRIPTURES
-// ==========================
 const fallbackScriptures = [
   { quote: "For God so loved the world that he gave his one and only Son...", author: "Bible - John 3:16" },
   { quote: "For I know the plans I have for you, declares the Lord...", author: "Bible - Jeremiah 29:11" },
@@ -25,9 +19,6 @@ const fallbackScriptures = [
   { quote: "You have a right to perform your duty, but not to the fruits of action.", author: "Bhagavad Gita - 2:47" }
 ];
 
-// ==========================
-// APP STATE
-// ==========================
 const state = {
   currentQuote: null,
   history: [],
@@ -35,18 +26,12 @@ const state = {
   savedQuotes: JSON.parse(localStorage.getItem("savedQuotes")) || []
 };
 
-// ==========================
-// DOM ELEMENTS
-// ==========================
 const quoteEl = document.getElementById("quote");
 const authorEl = document.getElementById("author");
 const statusEl = document.getElementById("copy-status");
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("navLinks");
 
-// ==========================
-// QUOTE LOGIC
-// ==========================
 function displayQuote(qObj) {
   state.currentQuote = qObj;
   quoteEl.textContent = `"${qObj.quote}"`;
@@ -60,9 +45,6 @@ function generateRandomQuote() {
   displayQuote(qObj);
 }
 
-// ==========================
-// HISTORY, SAVE & COPY
-// ==========================
 function saveQuote() {
   if (!state.currentQuote) return alert("No quote to save!");
   const duplicate = state.savedQuotes.some(q => q.quote === state.currentQuote.quote);
@@ -103,9 +85,6 @@ function copyQuote() {
   setTimeout(() => statusEl.style.opacity = 0, 1500);
 }
 
-// ==========================
-// THEME
-// ==========================
 function toggleTheme() {
   const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", newTheme);
@@ -113,9 +92,6 @@ function toggleTheme() {
   generateRandomQuote();
 }
 
-// ==========================
-// MODALS
-// ==========================
 function openModal(id) {
   const modal = document.getElementById(id + "-modal");
   if (!modal) return;
@@ -124,9 +100,6 @@ function openModal(id) {
   window.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
 }
 
-// ==========================
-// ORACLE ENGINE
-// ==========================
 const oracleStyles = {
   cryptic: [
     "The answer hides in the pause between thoughts.",
@@ -155,9 +128,6 @@ function getOracleResponse(question) {
   return responses[Math.floor(Math.random() * responses.length)];
 }
 
-// ==========================
-// ORACLE UI
-// ==========================
 const oracleBtn = document.getElementById("ask-oracle-btn");
 const oracleModal = document.getElementById("oracle-modal");
 const oracleInput = document.getElementById("oracle-input");
@@ -179,9 +149,6 @@ oracleSend.onclick = () => {
   oracleInput.value = "";
 };
 
-// ==========================
-// SHARE BUTTONS
-// ==========================
 function shareText() {
   return document.getElementById("quote").textContent;
 }
@@ -195,26 +162,17 @@ document.getElementById("share-facebook").onclick = () =>
 document.getElementById("share-whatsapp").onclick = () =>
   window.open(`https://wa.me/?text=${encodeURIComponent(shareText() + " " + location.href)}`);
 
-// ==========================
-// HAMBURGER MENU
-// ==========================
 hamburger.addEventListener("click", () => {
   hamburger.classList.toggle("active");
   navLinks.classList.toggle("show");
 });
 
-// ==========================
-// KEYBOARD SHORTCUTS
-// ==========================
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") { e.preventDefault(); generateRandomQuote(); }
   if (e.code === "ArrowLeft") showSavedQuotes();
   if (e.key.toLowerCase() === "s") saveQuote();
 });
 
-// ==========================
-// INITIALIZATION
-// ==========================
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", savedTheme);
