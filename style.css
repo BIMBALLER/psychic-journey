@@ -399,7 +399,7 @@ button:hover {
 
   /* Theme toggle clearly separated from hamburger on mobile */
   #themeToggle {
-    top: 80px;
+    top: 100px;
     right: 1rem;
     width: 44px;
     height: 44px;
@@ -428,7 +428,7 @@ button:hover {
   }
 
   #themeToggle {
-    top: 62px;
+    top: 70px;
     right: 0.8rem;
   }
 }
