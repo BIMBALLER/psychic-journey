@@ -1,6 +1,6 @@
-// ────────────────────────────────
-// QUOTES & SCRIPTURES
-// ────────────────────────────────
+// ==============================
+// QUOTES
+// ==============================
 const fallbackQuotes = [
   { quote: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Confucius" },
@@ -22,32 +22,57 @@ const fallbackScriptures = [
   { quote: "You have a right to perform your duty, but not to the fruits of action.", author: "Bhagavad Gita - 2:47" }
 ];
 
-// ────────────────────────────────
+// ==============================
+// ORACLE FALLBACK RESPONSES
+// ==============================
+const oracleResponses = [
+  "The answer hides in the pause between thoughts.",
+  "What you seek already moves toward you.",
+  "Silence will reveal more than action.",
+  "Patience and effort must walk together.",
+  "Trust yourself, but remain open to change.",
+  "The path becomes clear once you commit.",
+  "Meaning is not found, it is created through awareness.",
+  "Your question reflects a deeper truth about your becoming.",
+  "The self you are becoming is asking for discipline, not certainty.",
+  "Every step forward reveals what was hidden before.",
+  "The mind sees what the heart allows it to see.",
+  "Change is the only constant; embrace it fully.",
+  "Even in darkness, a single spark can guide you.",
+  "Listen to the silence; it carries the deepest truths.",
+  "The journey itself holds the answers you seek.",
+  "Let go of what you cannot control, and clarity will emerge.",
+  "Wisdom often arrives disguised as confusion.",
+  "The future unfolds from the choices you make today.",
+  "When doubt clouds the mind, action clears the way.",
+  "Your intuition knows more than your logic realizes.",
+  "Sometimes the question itself is the answer.",
+  "Observe first, act second.",
+  "The universe whispers; are you listening?",
+  "Seek not answers, but understanding.",
+  "Every ending is the start of something new."
+];
+
+// ==============================
 // STATE
-// ────────────────────────────────
+// ==============================
 const state = {
   currentQuote: null,
   savedQuotes: JSON.parse(localStorage.getItem("savedQuotes")) || []
 };
 
-// ────────────────────────────────
-// ELEMENTS
-// ────────────────────────────────
+// ==============================
+// DOM ELEMENTS
+// ==============================
 const quoteEl = document.getElementById("quote");
 const authorEl = document.getElementById("author");
 const statusEl = document.getElementById("copy-status");
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("navLinks");
-const oracleResponse = document.getElementById("oracle-response");
-const oracleInput = document.getElementById("oracle-input");
-const oracleSend = document.getElementById("oracle-send");
-const oracleBtn = document.getElementById("ask-oracle-btn");
-const oracleModal = document.getElementById("oracle-modal");
-const oracleClose = document.getElementById("close-oracle");
 
-// ────────────────────────────────
+// ==============================
 // DISPLAY QUOTE
-// ────────────────────────────────
+// ==============================
 function displayQuote(qObj) {
   state.currentQuote = qObj;
   quoteEl.textContent = `"${qObj.quote}"`;
@@ -55,19 +80,19 @@ function displayQuote(qObj) {
   quoteEl.classList.add("show");
 }
 
-// ────────────────────────────────
+// ==============================
 // GENERATE RANDOM QUOTE BASED ON THEME
-// ────────────────────────────────
+// ==============================
 function generateRandomQuote() {
   const theme = document.documentElement.getAttribute("data-theme");
-  const pool = theme === "dark" ? fallbackQuotes : fallbackScriptures;
-  const qObj = pool[Math.floor(Math.random() * pool.length)];
+  const allQuotes = theme === "dark" ? fallbackQuotes : fallbackScriptures;
+  const qObj = allQuotes[Math.floor(Math.random() * allQuotes.length)];
   displayQuote(qObj);
 }
 
-// ────────────────────────────────
+// ==============================
 // SAVE QUOTE
-// ────────────────────────────────
+// ==============================
 function saveQuote() {
   if (!state.currentQuote) return alert("No quote to save!");
   const duplicate = state.savedQuotes.some(q => q.quote === state.currentQuote.quote);
@@ -77,24 +102,25 @@ function saveQuote() {
   alert("Quote saved!");
 }
 
-// ────────────────────────────────
-// SHOW / REMOVE SAVED QUOTES
-// ────────────────────────────────
+// ==============================
+// SHOW SAVED QUOTES
+// ==============================
 function showSavedQuotes() {
   const section = document.getElementById("saved-section");
   const div = document.getElementById("saved-quotes");
+
   if (section.classList.contains("hidden")) {
     div.innerHTML = "<h3>Saved Readings</h3>";
     if (!state.savedQuotes.length) div.innerHTML += "<p>No saved readings yet.</p>";
     else state.savedQuotes.forEach((q, i) => {
       const p = document.createElement("p");
       p.innerHTML = `"${q.quote}"<br><em>- ${q.author}</em>`;
-      const btn = document.createElement("button");
+      const btn = document.createElement("button"); 
       btn.textContent = "×";
-      btn.onclick = () => {
-        state.savedQuotes.splice(i, 1);
-        localStorage.setItem("savedQuotes", JSON.stringify(state.savedQuotes));
-        showSavedQuotes();
+      btn.onclick = () => { 
+        state.savedQuotes.splice(i, 1); 
+        localStorage.setItem("savedQuotes", JSON.stringify(state.savedQuotes)); 
+        showSavedQuotes(); 
       };
       p.appendChild(btn);
       div.appendChild(p);
@@ -103,9 +129,9 @@ function showSavedQuotes() {
   } else section.classList.add("hidden");
 }
 
-// ────────────────────────────────
+// ==============================
 // COPY QUOTE
-// ────────────────────────────────
+// ==============================
 function copyQuote() {
   if (!state.currentQuote) return;
   navigator.clipboard.writeText(`"${state.currentQuote.quote}" - ${state.currentQuote.author}`);
@@ -114,9 +140,9 @@ function copyQuote() {
   setTimeout(() => statusEl.style.opacity = 0, 1500);
 }
 
-// ────────────────────────────────
-// THEME TOGGLE
-// ────────────────────────────────
+// ==============================
+// TOGGLE THEME
+// ==============================
 function toggleTheme() {
   const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", newTheme);
@@ -124,66 +150,57 @@ function toggleTheme() {
   generateRandomQuote();
 }
 
-// ────────────────────────────────
-// HAMBURGER MENU
-// ────────────────────────────────
-hamburger.addEventListener("click", () => {
-  hamburger.classList.toggle("active");
-  navLinks.classList.toggle("show");
-});
-
-// ────────────────────────────────
-// GOOGLE AI STUDIO ORACLE
-// ────────────────────────────────
-async function askOracle(question) {
-  if (!question.trim()) return;
-
-  oracleResponse.textContent = "⏳ Consulting the Oracle…";
-
-  try {
-    const res = await fetch("/api/oracle", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question })
-    });
-
-    const data = await res.json();
-    oracleResponse.textContent = data.answer || "The Oracle remains silent…";
-  } catch (err) {
-    oracleResponse.textContent = "❌ Oracle could not respond.";
-    console.error(err);
-  }
+// ==============================
+// MODAL FUNCTION
+// ==============================
+function openModal(id) {
+  const modal = document.getElementById(id + "-modal");
+  if (!modal) return;
+  modal.classList.add("active");
+  modal.querySelector(".close").onclick = () => modal.classList.remove("active");
+  window.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
 }
 
-// ────────────────────────────────
-// ORACLE MODAL LOGIC
-// ────────────────────────────────
+// ==============================
+// ORACLE MODAL (FRONTEND ONLY)
+// ==============================
+const oracleBtn = document.getElementById("ask-oracle-btn");
+const oracleModal = document.getElementById("oracle-modal");
+const oracleInput = document.getElementById("oracle-input");
+const oracleSend = document.getElementById("oracle-send");
+const oracleResponse = document.getElementById("oracle-response");
+const oracleClose = document.getElementById("close-oracle");
+
 oracleBtn.onclick = () => {
   oracleModal.style.display = "flex";
   oracleInput.focus();
 };
 
-oracleClose.onclick = () => {
-  oracleModal.style.display = "none";
-};
+oracleClose.onclick = () => oracleModal.style.display = "none";
 
-// Close modal when clicking outside the modal content
-window.addEventListener("click", (e) => {
-  if (e.target === oracleModal) oracleModal.style.display = "none";
-});
-
-// Oracle submit
 oracleSend.onclick = () => {
-  const q = oracleInput.value.trim();
-  if (!q) return;
-  askOracle(q);
-  oracleInput.value = "";
+  const question = oracleInput.value.trim();
+  if (!question) return;
+
+  // Show "thinking" message
+  oracleResponse.textContent = "⏳ Oracle is thinking...";
+  oracleSend.disabled = true;
+
+  setTimeout(() => {
+    // Pick a random oracle response
+    const answer = oracleResponses[Math.floor(Math.random() * oracleResponses.length)];
+    oracleResponse.textContent = answer;
+    oracleSend.disabled = false;
+    oracleInput.value = "";
+  }, 800);
 };
 
-// ────────────────────────────────
-// SHARE QUOTE
-// ────────────────────────────────
-function shareText() { return document.getElementById("quote").textContent; }
+// ==============================
+// SHARE FUNCTION
+// ==============================
+function shareText() {
+  return document.getElementById("quote").textContent;
+}
 
 document.getElementById("share-twitter").onclick = () =>
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}`);
@@ -194,18 +211,26 @@ document.getElementById("share-facebook").onclick = () =>
 document.getElementById("share-whatsapp").onclick = () =>
   window.open(`https://wa.me/?text=${encodeURIComponent(shareText() + " " + location.href)}`);
 
-// ────────────────────────────────
+// ==============================
+// HAMBURGER TOGGLE
+// ==============================
+hamburger.addEventListener("click", () => {
+  hamburger.classList.toggle("active");
+  navLinks.classList.toggle("show");
+});
+
+// ==============================
 // KEYBOARD SHORTCUTS
-// ────────────────────────────────
+// ==============================
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") { e.preventDefault(); generateRandomQuote(); }
   if (e.code === "ArrowLeft") showSavedQuotes();
   if (e.key.toLowerCase() === "s") saveQuote();
 });
 
-// ────────────────────────────────
-// INITIALIZATION
-// ────────────────────────────────
+// ==============================
+// INITIALIZE ON DOM CONTENT LOADED
+// ==============================
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", savedTheme);
