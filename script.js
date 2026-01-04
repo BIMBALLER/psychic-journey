@@ -1,3 +1,6 @@
+// ────────────────────────────────
+// QUOTES & SCRIPTURES
+// ────────────────────────────────
 const fallbackQuotes = [
   { quote: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Confucius" },
@@ -19,19 +22,32 @@ const fallbackScriptures = [
   { quote: "You have a right to perform your duty, but not to the fruits of action.", author: "Bhagavad Gita - 2:47" }
 ];
 
+// ────────────────────────────────
+// STATE
+// ────────────────────────────────
 const state = {
   currentQuote: null,
-  history: [],
-  historyIndex: -1,
   savedQuotes: JSON.parse(localStorage.getItem("savedQuotes")) || []
 };
 
+// ────────────────────────────────
+// ELEMENTS
+// ────────────────────────────────
 const quoteEl = document.getElementById("quote");
 const authorEl = document.getElementById("author");
 const statusEl = document.getElementById("copy-status");
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("navLinks");
+const oracleResponse = document.getElementById("oracle-response");
+const oracleInput = document.getElementById("oracle-input");
+const oracleSend = document.getElementById("oracle-send");
+const oracleBtn = document.getElementById("ask-oracle-btn");
+const oracleModal = document.getElementById("oracle-modal");
+const oracleClose = document.getElementById("close-oracle");
 
+// ────────────────────────────────
+// DISPLAY QUOTE
+// ────────────────────────────────
 function displayQuote(qObj) {
   state.currentQuote = qObj;
   quoteEl.textContent = `"${qObj.quote}"`;
@@ -39,12 +55,19 @@ function displayQuote(qObj) {
   quoteEl.classList.add("show");
 }
 
+// ────────────────────────────────
+// GENERATE RANDOM QUOTE BASED ON THEME
+// ────────────────────────────────
 function generateRandomQuote() {
-  const allQuotes = [...fallbackQuotes, ...fallbackScriptures];
-  const qObj = allQuotes[Math.floor(Math.random() * allQuotes.length)];
+  const theme = document.documentElement.getAttribute("data-theme");
+  const pool = theme === "dark" ? fallbackQuotes : fallbackScriptures;
+  const qObj = pool[Math.floor(Math.random() * pool.length)];
   displayQuote(qObj);
 }
 
+// ────────────────────────────────
+// SAVE QUOTE
+// ────────────────────────────────
 function saveQuote() {
   if (!state.currentQuote) return alert("No quote to save!");
   const duplicate = state.savedQuotes.some(q => q.quote === state.currentQuote.quote);
@@ -54,6 +77,9 @@ function saveQuote() {
   alert("Quote saved!");
 }
 
+// ────────────────────────────────
+// SHOW / REMOVE SAVED QUOTES
+// ────────────────────────────────
 function showSavedQuotes() {
   const section = document.getElementById("saved-section");
   const div = document.getElementById("saved-quotes");
@@ -63,12 +89,12 @@ function showSavedQuotes() {
     else state.savedQuotes.forEach((q, i) => {
       const p = document.createElement("p");
       p.innerHTML = `"${q.quote}"<br><em>- ${q.author}</em>`;
-      const btn = document.createElement("button"); 
+      const btn = document.createElement("button");
       btn.textContent = "×";
-      btn.onclick = () => { 
-        state.savedQuotes.splice(i, 1); 
-        localStorage.setItem("savedQuotes", JSON.stringify(state.savedQuotes)); 
-        showSavedQuotes(); 
+      btn.onclick = () => {
+        state.savedQuotes.splice(i, 1);
+        localStorage.setItem("savedQuotes", JSON.stringify(state.savedQuotes));
+        showSavedQuotes();
       };
       p.appendChild(btn);
       div.appendChild(p);
@@ -77,6 +103,9 @@ function showSavedQuotes() {
   } else section.classList.add("hidden");
 }
 
+// ────────────────────────────────
+// COPY QUOTE
+// ────────────────────────────────
 function copyQuote() {
   if (!state.currentQuote) return;
   navigator.clipboard.writeText(`"${state.currentQuote.quote}" - ${state.currentQuote.author}`);
@@ -85,6 +114,9 @@ function copyQuote() {
   setTimeout(() => statusEl.style.opacity = 0, 1500);
 }
 
+// ────────────────────────────────
+// THEME TOGGLE
+// ────────────────────────────────
 function toggleTheme() {
   const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", newTheme);
@@ -92,66 +124,66 @@ function toggleTheme() {
   generateRandomQuote();
 }
 
-function openModal(id) {
-  const modal = document.getElementById(id + "-modal");
-  if (!modal) return;
-  modal.classList.add("active");
-  modal.querySelector(".close").onclick = () => modal.classList.remove("active");
-  window.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
+// ────────────────────────────────
+// HAMBURGER MENU
+// ────────────────────────────────
+hamburger.addEventListener("click", () => {
+  hamburger.classList.toggle("active");
+  navLinks.classList.toggle("show");
+});
+
+// ────────────────────────────────
+// GOOGLE AI STUDIO ORACLE
+// ────────────────────────────────
+async function askOracle(question) {
+  if (!question.trim()) return;
+
+  oracleResponse.textContent = "⏳ Consulting the Oracle…";
+
+  try {
+    const res = await fetch("/api/oracle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question })
+    });
+
+    const data = await res.json();
+    oracleResponse.textContent = data.answer || "The Oracle remains silent…";
+  } catch (err) {
+    oracleResponse.textContent = "❌ Oracle could not respond.";
+    console.error(err);
+  }
 }
 
-const oracleStyles = {
-  cryptic: [
-    "The answer hides in the pause between thoughts.",
-    "What you seek already moves toward you.",
-    "Silence will reveal more than action."
-  ],
-  balanced: [
-    "Patience and effort must walk together.",
-    "Trust yourself, but remain open to change.",
-    "The path becomes clear once you commit."
-  ],
-  deep: [
-    "Meaning is not found, it is created through awareness.",
-    "Your question reflects a deeper truth about your becoming.",
-    "The self you are becoming is asking for discipline, not certainty."
-  ]
-};
-
-function getOracleResponse(question) {
-  const q = question.toLowerCase();
-  let style;
-  if (q.length < 30) style = "cryptic";
-  else if (q.includes("why") || q.includes("meaning")) style = "deep";
-  else style = Math.random() > 0.5 ? "balanced" : "deep";
-  const responses = oracleStyles[style];
-  return responses[Math.floor(Math.random() * responses.length)];
-}
-
-const oracleBtn = document.getElementById("ask-oracle-btn");
-const oracleModal = document.getElementById("oracle-modal");
-const oracleInput = document.getElementById("oracle-input");
-const oracleSend = document.getElementById("oracle-send");
-const oracleResponse = document.getElementById("oracle-response");
-const oracleClose = document.getElementById("close-oracle");
-
+// ────────────────────────────────
+// ORACLE MODAL LOGIC
+// ────────────────────────────────
 oracleBtn.onclick = () => {
   oracleModal.style.display = "flex";
   oracleInput.focus();
 };
 
-oracleClose.onclick = () => oracleModal.style.display = "none";
+oracleClose.onclick = () => {
+  oracleModal.style.display = "none";
+};
 
+// Close modal when clicking outside the modal content
+window.addEventListener("click", (e) => {
+  if (e.target === oracleModal) oracleModal.style.display = "none";
+});
+
+// Oracle submit
 oracleSend.onclick = () => {
   const q = oracleInput.value.trim();
   if (!q) return;
-  oracleResponse.textContent = getOracleResponse(q);
+  askOracle(q);
   oracleInput.value = "";
 };
 
-function shareText() {
-  return document.getElementById("quote").textContent;
-}
+// ────────────────────────────────
+// SHARE QUOTE
+// ────────────────────────────────
+function shareText() { return document.getElementById("quote").textContent; }
 
 document.getElementById("share-twitter").onclick = () =>
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}`);
@@ -162,17 +194,18 @@ document.getElementById("share-facebook").onclick = () =>
 document.getElementById("share-whatsapp").onclick = () =>
   window.open(`https://wa.me/?text=${encodeURIComponent(shareText() + " " + location.href)}`);
 
-hamburger.addEventListener("click", () => {
-  hamburger.classList.toggle("active");
-  navLinks.classList.toggle("show");
-});
-
+// ────────────────────────────────
+// KEYBOARD SHORTCUTS
+// ────────────────────────────────
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") { e.preventDefault(); generateRandomQuote(); }
   if (e.code === "ArrowLeft") showSavedQuotes();
   if (e.key.toLowerCase() === "s") saveQuote();
 });
 
+// ────────────────────────────────
+// INITIALIZATION
+// ────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", savedTheme);
