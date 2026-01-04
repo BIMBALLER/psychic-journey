@@ -1,37 +1,44 @@
+// api/oracle.js
+import fetch from "node-fetch";
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).json({ answer: "Method not allowed" });
   }
 
   const { question } = req.body;
-  if (!question) return res.status(400).json({ error: "Question required" });
+  if (!question) {
+    return res.status(400).json({ answer: "No question provided" });
+  }
 
   try {
-    // ⚡ API key from environment variable (never put key here!)
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = "AIzaSyD-TyZeGONgv3695z4EFS1H6l0XroGIYtE"; // your Google API key
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=${apiKey}`;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: {
-            text: `You are a mystical oracle. Answer briefly and insightfully:\nQ: ${question}\nA:`
-          },
-          maxOutputTokens: 150
-        })
-      }
-    );
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: question,
+        temperature: 0.7,
+        maxOutputTokens: 150
+      })
+    });
 
     const data = await response.json();
 
-    // ⚡ Gemini free tier may return output[0].content
-    const answer =
-      data?.candidates?.[0]?.content || data?.generatedText || "No answer available.";
+    // Log full response for debugging
+    console.log("Google AI Response:", JSON.stringify(data, null, 2));
+
+    // Safely get content
+    let answer = "No answer available.";
+    if (data?.candidates && data.candidates.length > 0 && data.candidates[0].content) {
+      answer = data.candidates[0].content.trim();
+    }
 
     res.status(200).json({ answer });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Oracle API error:", err);
+    res.status(500).json({ answer: "❌ Oracle could not respond." });
   }
 }
